@@ -173,15 +173,22 @@ test('motion pause stops ambient animation and empty video makes no request', as
   expect(mediaRequests).toEqual([]);
 });
 
-test('the lower-page koi current pauses with global motion controls', async ({ page }) => {
+test('the restored lower-page koi canvas pauses with global motion controls', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  const koi = page.locator('.koi-drift-one');
+  const koi = page.locator('#koiCanvas');
   await expect(koi).toBeVisible();
-  await expect(koi).toHaveCSS('animation-name', 'koi-swim');
+  await expect(koi).toHaveAttribute('aria-hidden', 'true');
+  const movingPixels = () => page.locator('#koiCanvas').evaluate(canvas => {
+    const ctx = canvas.getContext('2d');
+    return [...ctx.getImageData(canvas.width / 2, canvas.height / 2, 1, 1).data];
+  });
   await page.getByRole('button', { name: 'Pause motion' }).click();
-  await expect(koi).toHaveCSS('animation-play-state', 'paused');
+  await page.waitForTimeout(80);
+  const pausedPixels = await movingPixels();
+  await page.waitForTimeout(160);
+  expect(await movingPixels()).toEqual(pausedPixels);
   await page.getByRole('button', { name: 'Resume motion' }).click();
-  await expect(koi).toHaveCSS('animation-play-state', 'running');
+  await expect.poll(movingPixels).not.toEqual(pausedPixels);
 });
 
 for (const value of ['media/missing-loop.mp4', 'javascript:alert(1)']) {
