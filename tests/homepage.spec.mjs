@@ -173,6 +173,17 @@ test('motion pause stops ambient animation and empty video makes no request', as
   expect(mediaRequests).toEqual([]);
 });
 
+test('the lower-page koi current pauses with global motion controls', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  const koi = page.locator('.koi-drift-one');
+  await expect(koi).toBeVisible();
+  await expect(koi).toHaveCSS('animation-name', 'koi-swim');
+  await page.getByRole('button', { name: 'Pause motion' }).click();
+  await expect(koi).toHaveCSS('animation-play-state', 'paused');
+  await page.getByRole('button', { name: 'Resume motion' }).click();
+  await expect(koi).toHaveCSS('animation-play-state', 'running');
+});
+
 for (const value of ['media/missing-loop.mp4', 'javascript:alert(1)']) {
   test(`video configuration safely falls back: ${value}`, async ({ page }) => {
     await page.route('http://127.0.0.1:4187/', async route => {
