@@ -20,7 +20,7 @@ test('the page has one main heading and English search metadata', () => {
   assert.equal((html.match(/<h1[\s>]/g) || []).length, 1);
   assert.match(html, /<html lang="en">/);
   assert.match(html, /<meta name="description" content="[^"]{40,180}"/);
-  assert.match(html, /<title>Koi Creative.*Business Technology Studio<\/title>/);
+  assert.match(html, /<title>Koi \| Business Technology Studio<\/title>/);
 });
 
 test('the booking placeholder does not point to an invented account or claim submission', () => {

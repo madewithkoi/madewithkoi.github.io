@@ -9,7 +9,7 @@ test('service examples work with pointer and keyboard', async ({ page }) => {
     await tabs.nth(i).click();
     await expect(tabs.nth(i)).toHaveAttribute('aria-selected', 'true');
     await expect(page.getByRole('tabpanel')).toHaveCount(1);
-    await expect(page.getByRole('tabpanel')).toContainText('Illustrative conversation');
+    await expect(page.getByRole('tabpanel')).toContainText('workflow');
   }
   await tabs.nth(0).focus();
   await page.keyboard.press('ArrowRight');
@@ -142,7 +142,7 @@ for (const [value, valid] of [
 
 test('offering links select the matching conversation and console', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  for (const [key, title, source] of [['hr', 'People & HR', 'Employee handbook'], ['knowledge', 'Knowledge Management', 'Customer onboarding SOP'], ['founder', 'Owner/Founder Intelligence', 'Invoice summary']]) {
+  for (const [key, title, source] of [['hr', 'People & HR', 'Employee handbook'], ['knowledge', 'Knowledge Management', 'Customer onboarding SOP'], ['founder', 'Owner/Founder Intelligence', 'Revenue summary']]) {
     await page.locator(`.offering-card[data-scenario="${key}"]`).click();
     await expect(page).toHaveURL(/#assistant$/);
     await expect(page.locator('#console-title')).toHaveText(title);
