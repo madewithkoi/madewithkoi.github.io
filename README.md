@@ -1,39 +1,31 @@
 # Koi Creative homepage
 
-Static HTML, CSS, and JavaScript. No production dependencies or build step. The homepage leads with business technology, preserves creative services, and uses a 30-minute discovery call as its main action.
+Static HTML, CSS, and JavaScript. No production dependencies or build step. Technology leads, with a WhatsApp assistant, admin console, and eight section images. Creative services remain visible.
 
 ## Preview
 
-```sh
-npm start
-```
+Run `npm start`, then open http://127.0.0.1:4187. The browser suite manages that same port; stop a manual preview before running it. The current review preview uses port 4188.
 
-Open http://127.0.0.1:4187. This serves this worktree only. If a preview is already running, stop it before running the browser suite (the suite manages its own server on the same port).
+## Replace the hero video
+
+Set the `hero-video-url` meta element in `index.html` to your video path (for example `media/hero-loop.mp4`) or an HTTPS video URL. Use an optimized, silent looping film. Until configured, a moving Koi gradient fills the video area. No sample artwork or generated video is used.
+
+Playback is muted, inline, and looping. Pause motion stops the video and ambient animations. Reduced-motion preferences disable autoplay. Failed or blocked playback preserves the gradient placeholder. Store production video in asset hosting or Git LFS rather than committing binaries.
 
 ## Booking
 
-Set `content` on the `calendly-event-url` meta element in `index.html` to Koi's real HTTPS Calendly event URL. The current empty value deliberately shows **Online booking is coming soon**, with the existing email as a working fallback. A valid URL enables the Calendly links in both the contact section and booking dialog. Invalid URLs keep the fallback. No booking is simulated and no form data is collected.
+Set the `calendly-event-url` meta element to your real HTTPS Calendly event URL. Empty or invalid configuration keeps the visible booking placeholder and existing email fallback. Calls are 30 minutes for problem statement and discovery. No booking is simulated.
+
+## Imagery and type
+
+Sora headings and DM Sans body fonts use versioned Fontsource files with swap fallbacks. Three original illustrative photographs were generated with the built-in image tool; prompts are in `assets/section-image-prompts.json`. Optimized JPEGs are stored as GitHub release assets under `koi-section-art-20260913`, with local copies in ignored `assets/generated/`. Five existing Koi concept images complete the eight-image layout. No user sample artwork or Higgsfield output is included. Images and example interfaces are clearly illustrative, not client work or performance claims.
 
 ## Checks
 
-```sh
-npm ci
-npm test
-npm run eval
-npm run test:browser
-```
+Run `npm ci`, `npm test`, `npm run eval`, and `npm run test:browser`. Install Playwright Chromium before the first browser run. Content tests validate links, local assets, metadata, and honest booking. The deterministic content eval requires 10/10 brief criteria; visual judgment is reviewed separately. Browser checks cover the three scenarios, console views, keyboard navigation, mobile menu, booking focus, no-JavaScript fallback, motion controls, video configuration, and full axe accessibility at five widths.
 
-The local Node tests check document structure, assets, destinations, and truthful booking behavior. The deterministic content eval checks the agreed deck coverage and disclosure rubric, with a 10/10 acceptance threshold. It is not a substitute for visual review. Playwright checks all three service examples, keyboard behavior, mobile navigation, dialog focus, no-JavaScript fallback, reduced motion, assets, console errors, and WCAG AA checks at five widths. Install Playwright Chromium if it is not already available.
+## Content
 
-## Content and design
+Source: the supplied 13-slide Koi deck and the updated brief. Priority offers are People & HR, Knowledge Management, and Owner/Founder Intelligence. Existing-product integrations require discovery of API availability and permissions. This homepage contains an interactive concept, not a connected chatbot backend. No user data is sent.
 
-- Source: supplied `reference/KOI Deck 1st draft.pptx`, 13 slides, plus existing creative-services and contact copy.
-- All dashboards are illustrative concepts, not live demos, completed projects, client identities, or results. The intelligence figures come from slide 13 and are labeled as examples.
-- The user selected Calendly's homepage structure, Koi's existing palette, English copy for Indonesian businesses, and technology as the lead offer.
-- DM Sans replaces Figtree for compact, readable headings and body copy. The original Koi logo is retained.
-- The three tabs illustrate the priority offers. Secondary use cases, a dedicated creative-services section, and the deck's five-step process keep the page condensed.
-- The cream surface, charcoal controls, peach showcase, and restrained orange accents translate the requested reference into Koi's brand. Dark charcoal marks the secondary creative practice. Fixed light presentation follows that reference and brand direction.
-- Rounded surfaces group the hero, service examples, and meeting details. Borders organize actual sample data. Icons indicate checklist status or call duration; arrows appear only on secondary navigation links. The only shadow identifies the mobile menu overlay.
-- ENERGY 2 / RHYTHM 2 / MOTION 1: varied section structures and hover/selection feedback, with no ambient animation. Content remains visible without JavaScript.
-
-Only source files and text verification files are committed. Reference decks and review screenshots remain outside the commit. No production deployment is part of this branch; merge through review.
+Review and merge through the pull request. No production deployment is included.

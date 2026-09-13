@@ -8,3 +8,7 @@
 - The original contact form showed success without sending a request. Regression checks prohibit simulated submission claims, and the replacement uses the existing email address.
 
 The local gate runs in the supplied `.githooks/pre-commit` hook. CI runs the gate, content eval, and browser suite on pull requests. A headless browser provides automation evidence; visual review separately checks the reference and responsive screenshots.
+
+- External font stylesheets can block deferred scripts. Load fonts through nonblocking font-face resources with swap fallbacks, and retain the unavailable-font regression test.
+- Wait for media-query change events when asserting video pause. The preference event is asynchronous; use a polling assertion.
+- Clip decorative halos at their own container so they cannot widen the mobile document.

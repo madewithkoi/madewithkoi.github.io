@@ -1,0 +1,23 @@
+{
+  "mode": "built-in image_gen",
+  "images": [
+    {
+      "key": "people-hr",
+      "prompt": "Use case: photorealistic-natural. Asset type: wide website section photograph, landscape 3:2. Primary request: candid Indonesian coworkers onboarding with a smartphone and an open laptop in a beautifully sunlit contemporary Jakarta office. Two anonymous illustrative adult coworkers, relaxed natural expressions, one showing the phone to the other, no posed corporate handshake. Premium editorial photography, close observational crop, believable skin and hands, subtle film texture. Warm orange and cream accents, rich afternoon sunlight through architectural windows, natural desk materials. Compose for a wide section card with people and devices safely within central area. No text, logos, watermarks or legible screen content. Original photograph, do not reference any conversation images.",
+      "source": "/Users/gilangbhagaskara/.codex/generated_images/01a09a37-fd94-73c1-acde-ab5b2abd026b/exec-296db8f9-7036-4ae4-a15d-198ade107e9b.png",
+      "destination": "/private/tmp/koi-immersive-01a098c4/media/assets/people-hr.png"
+    },
+    {
+      "key": "knowledge",
+      "prompt": "Use case: photorealistic-natural. Asset type: wide website section photograph, landscape 3:2. Primary request: tactile close editorial view of a hand opening a beautifully organized reference binder on an oak desk beside an open laptop, conveying accessible business knowledge. Contemporary Indonesian office context, just the hand and objects, no faces. Cream paper, warm orange divider tabs, softly blurred page marks with no legible text. Premium realistic editorial photography, warm raking afternoon sunlight, deep soft shadows, realistic paper fibers and oak grain. Compose for a wide section card, close intentional detail crop. No text, logos or watermarks. Original photograph, do not reference any conversation images.",
+      "source": "/Users/gilangbhagaskara/.codex/generated_images/01a09a37-fd94-73c1-acde-ab5b2abd026b/exec-791b98d6-55ac-4eb3-8fe8-1863121830b5.png",
+      "destination": "/private/tmp/koi-immersive-01a098c4/media/assets/knowledge.png"
+    },
+    {
+      "key": "founder",
+      "prompt": "Use case: photorealistic-natural. Asset type: wide website section photograph, landscape 3:2. Primary request: an anonymous illustrative Indonesian small business owner at a beautiful neighborhood cafe counter reviewing a smartphone with an open laptop beside them. Composed observational scene of a real working moment, contemplative relaxed expression, contemporary Jakarta cafe with warm architectural evening light. Premium realistic editorial photography, subtle film grain, deep espresso tones, cream walls and restrained orange sunset accents. Medium wide composition suitable for cropping into a section card, person and devices near the central area. Natural human proportions and believable hands. No text, logos, watermarks or legible screen content. Original photograph, do not reference any conversation images.",
+      "source": "/Users/gilangbhagaskara/.codex/generated_images/01a09a37-fd94-73c1-acde-ab5b2abd026b/exec-eb8c9539-757c-42ba-afe7-33f6c25f5681.png",
+      "destination": "/private/tmp/koi-immersive-01a098c4/media/assets/founder.png"
+    }
+  ]
+}
