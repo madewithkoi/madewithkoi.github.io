@@ -5,6 +5,7 @@ on:
       - 'index.html'
       - 'styles.css'
       - 'site.js'
+      - 'i18n.js'
       - 'tests/**'
       - 'package*.json'
       - 'playwright.config.mjs'

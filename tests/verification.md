@@ -24,3 +24,11 @@ Browser evidence: `/private/tmp/koi-browser-results.log` and `/private/tmp/koi-v
 The assistant and admin console are illustrative browser demos, with no live messaging or business integrations. Video and Calendly are intentionally unconfigured for the owner to replace. Third-party font/image hosting still requires network access; font fallback remains functional if unavailable. Automated contrast checks cover the paused representative gradient state; moving backgrounds retain dark overlays for text readability. This is a review branch, not a production deployment.
 
 Self-rating: 8.5/10. The rework delivers the requested visual density and interaction; final cinematic character depends on the owner's film.
+
+## Content refresh (2026-09)
+
+- The page must stay light under load. Animated filters on tall layers (the old full-section `ambient` with `hue-rotate`) plus off-screen animation starved the renderer so badly that `locator.evaluate` calls timed out under parallel workers. Off-screen sections now pause (`data-offscreen`); keep large ambient layers transform-only.
+- Clicking a header control scrolls to the top, which resets the pinned before/after. Trigger it with `element.click()` in `page.evaluate` when a test must stay mid-scroll.
+- Set `scroll-behavior: auto` before scripted `scrollTo` in scroll-linked tests; smooth scrolling is still moving when assertions run.
+- Paused motion must not freeze text mid-fade: axe flagged a knowledge-base line captured at partial opacity. Text that fades in is reset under `.motion-paused`.
+- The pond only draws while on screen, so scroll it into view before sampling pixels.
