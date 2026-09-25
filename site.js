@@ -1,13 +1,45 @@
+import { en as runtimeEnglish, id as indonesian } from './i18n.js';
+
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const wide = window.matchMedia('(min-width: 900px)');
+const mobile = window.matchMedia('(max-width: 1024px)');
+const clamp = value => Math.min(1, Math.max(0, value));
+
+// Language: English is authored in the HTML; Indonesian replaces it from i18n.js.
+const textNodes = [...document.querySelectorAll('[data-i18n]')].map(node => [node, node.innerHTML]);
+const attrNodes = [...document.querySelectorAll('[data-i18n-attr]')].map(node => [node, node.dataset.i18nAttr.split(',').map(pair => {
+  const [attr, key] = pair.split(':');
+  return [attr, key, node.getAttribute(attr)];
+})]);
+let lang = 'en';
+const t = key => (lang === 'id' && indonesian[key]) || runtimeEnglish[key];
+const languageListeners = [];
+
+function setLanguage(next, persist) {
+  lang = next === 'id' ? 'id' : 'en';
+  document.documentElement.lang = lang;
+  for (const [node, english] of textNodes) node.innerHTML = lang === 'id' ? indonesian[node.dataset.i18n] ?? english : english;
+  for (const [node, pairs] of attrNodes) for (const [attr, key, english] of pairs) node.setAttribute(attr, lang === 'id' ? indonesian[key] ?? english : english);
+  for (const button of document.querySelectorAll('[data-lang]')) button.setAttribute('aria-pressed', String(button.dataset.lang === lang));
+  if (persist) {
+    try { localStorage.setItem('koi-lang', lang); } catch { /* Storage can be blocked; the URL still carries the choice. */ }
+    const url = new URL(location.href);
+    if (lang === 'id') url.searchParams.set('lang', 'id');
+    else url.searchParams.delete('lang');
+    history.replaceState(history.state, '', url);
+  }
+  languageListeners.forEach(listener => listener());
+}
+for (const button of document.querySelectorAll('[data-lang]')) button.addEventListener('click', () => setLanguage(button.dataset.lang, true));
+
+// Navigation
 const menuButton = document.querySelector('.menu-toggle');
 const navigation = document.querySelector('#main-navigation');
-const mobile = window.matchMedia('(max-width: 760px)');
-
 function closeMenu(restoreFocus = false) {
   menuButton.setAttribute('aria-expanded', 'false');
   navigation.classList.remove('is-open');
   if (restoreFocus) menuButton.focus();
 }
-
 menuButton.addEventListener('click', () => {
   const isOpen = menuButton.getAttribute('aria-expanded') === 'true';
   menuButton.setAttribute('aria-expanded', String(!isOpen));
@@ -24,132 +56,23 @@ document.addEventListener('keydown', event => {
 });
 mobile.addEventListener('change', () => closeMenu());
 
-const scenarios = {
-  hr: { title: 'People & HR', access: 'Employees', messages: ['How much annual leave do I have left?', 'You have 8 days of annual leave remaining.', 'Planning some time off? Submit a request through your HR system. I can point you to the leave policy.'], source: 'Employee handbook', rows: [['PDF', 'Employee handbook', 'Company policy', 'Employees'], ['HR', 'Leave balances', 'Existing HR platform', 'Personal'], ['DOC', 'Onboarding guide', 'Shared company documents', 'Employees']] },
-  knowledge: { title: 'Knowledge Management', access: 'By team', messages: ['Where’s the latest customer onboarding SOP?', 'I found the onboarding SOP in your shared company documents.', 'Start with the intake checklist, confirm the project owner, then schedule the kickoff. Open the source document for the full procedure.'], source: 'Customer onboarding SOP', rows: [['DOC', 'Customer onboarding SOP', 'Shared company documents', 'Client team'], ['PDF', 'Service playbook', 'Company knowledge', 'By team'], ['DOC', 'Project templates', 'Existing document storage', 'By team']] },
-  founder: { title: 'Owner/Founder Intelligence', access: 'Owners', messages: ['What needs my attention this morning?', 'Revenue yesterday: Rp482M, up 6.2%. Two things need attention.', 'Outlet B revenue is down 18% and receivables are Rp320M overdue. Follow up with four high-value accounts today.'], source: 'Owner briefing', rows: [['FIN', 'Revenue summary', 'Accounting system', 'Owners'], ['HR', 'Team schedule', 'HR platform', 'Managers'], ['DOC', 'Project updates', 'Internal business tools', 'Owners']] }
-};
-const tabs = [...document.querySelectorAll('[role="tab"]')];
-let currentScenario = 'hr';
-function renderConversation() {
-  const scenario = scenarios[currentScenario];
-  const messages = scenario.messages.map((text, index) => {
-    const message = document.createElement('div');
-    message.className = `message ${index ? 'message-in' : 'message-out'}`;
-    message.style.setProperty('--message-delay', `${index * 350}ms`);
-    message.textContent = text;
-    const note = document.createElement(index === 2 ? 'span' : 'small');
-    if (index === 2) note.className = 'message-source';
-    note.textContent = index === 2 ? `Source: ${scenario.source}` : index ? 'Koi assistant' : '9:41';
-    message.append(note);
-    return message;
-  });
-  document.querySelector('.chat-messages').replaceChildren(...messages);
-}
-function selectTab(tab) {
-  currentScenario = tab.dataset.demo;
-  const scenario = scenarios[currentScenario];
-  for (const item of tabs) {
-    const active = item === tab;
-    item.setAttribute('aria-selected', String(active));
-    item.tabIndex = active ? 0 : -1;
-  }
-  document.querySelector('#demo-panel').setAttribute('aria-labelledby', tab.id);
-  document.querySelector('#console-title').textContent = scenario.title;
-  document.querySelector('#console-access').textContent = scenario.access;
-  document.querySelector('#source-rows').replaceChildren(...scenario.rows.map(([icon, title, subtitle, access]) => {
-    const row = document.createElement('div'); row.className = 'source-row';
-    const file = document.createElement('span'); file.className = 'file-icon'; file.setAttribute('aria-hidden', 'true'); file.textContent = icon;
-    const label = document.createElement('div');
-    const heading = document.createElement('strong'); heading.textContent = title;
-    const description = document.createElement('small'); description.textContent = subtitle;
-    label.append(heading, description);
-    const permission = document.createElement('span'); permission.textContent = access;
-    row.append(file, label, permission); return row;
-  }));
-  renderConversation();
-}
-for (const [index, tab] of tabs.entries()) {
-  tab.addEventListener('click', () => selectTab(tab));
-  tab.addEventListener('keydown', event => {
-    const next = { ArrowRight: (index + 1) % tabs.length, ArrowLeft: (index + tabs.length - 1) % tabs.length, Home: 0, End: tabs.length - 1 }[event.key];
-    if (next === undefined) return;
-    event.preventDefault(); selectTab(tabs[next]); tabs[next].focus();
-  });
-}
-for (const link of document.querySelectorAll('[data-scenario]')) {
-  link.addEventListener('click', () => selectTab(tabs.find(tab => tab.dataset.demo === link.dataset.scenario)));
-}
-document.querySelector('.replay-button').addEventListener('click', renderConversation);
-for (const button of document.querySelectorAll('[data-console-view]')) {
-  button.addEventListener('click', () => {
-    for (const item of document.querySelectorAll('[data-console-view]')) item.setAttribute('aria-pressed', String(item === button));
-    document.querySelector('#console-sources').hidden = button.dataset.consoleView !== 'sources';
-    document.querySelector('#console-activity').hidden = button.dataset.consoleView !== 'activity';
-  });
-}
-
-const bookingDialog = document.getElementById('booking-dialog');
-let bookingTrigger;
-for (const trigger of document.querySelectorAll('[data-booking]')) {
-  trigger.addEventListener('click', event => {
-    if (typeof bookingDialog.showModal !== 'function') return;
-    event.preventDefault();
-    bookingTrigger = trigger;
-    bookingDialog.showModal();
-  });
-}
-bookingDialog.querySelector('.dialog-close').addEventListener('click', () => bookingDialog.close());
-bookingDialog.addEventListener('click', event => {
-  const rect = bookingDialog.getBoundingClientRect();
-  if (event.target === bookingDialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) bookingDialog.close();
-});
-bookingDialog.addEventListener('close', () => {
-  if (bookingTrigger && getComputedStyle(bookingTrigger).display !== 'none' && bookingTrigger.getClientRects().length) bookingTrigger.focus();
-  else menuButton.focus();
-});
-
-// TODO: Set the calendly-event-url meta value once Koi's event URL is available.
-// Until then, the visible booking placeholder and email fallback remain usable.
-const eventUrl = document.querySelector('meta[name="calendly-event-url"]').content.trim();
-if (eventUrl) {
-  try {
-    const url = new URL(eventUrl);
-    if (url.protocol === 'https:' && ['calendly.com', 'www.calendly.com'].includes(url.hostname) && url.pathname !== '/' && !url.username && !url.password) {
-      for (const link of document.querySelectorAll('[data-calendly-link]')) {
-        link.href = url.href;
-        link.hidden = false;
-      }
-      for (const notice of document.querySelectorAll('[data-booking-placeholder]')) notice.hidden = true;
-    }
-  } catch {
-    // An invalid configuration keeps the email option instead of a broken link.
-  }
-}
-const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+// Motion: one switch pauses CSS animation, the hero film, and the pond.
 const motionButton = document.querySelector('.motion-control');
 const video = document.querySelector('#hero-video');
-const videoStatus = document.querySelector('#video-status');
 let paused = reducedMotion.matches;
 function applyMotion() {
   document.documentElement.classList.toggle('motion-paused', paused);
   motionButton.setAttribute('aria-pressed', String(paused));
-  motionButton.querySelector('.motion-label').textContent = paused ? 'Resume motion' : 'Pause motion';
+  motionButton.querySelector('.motion-label').textContent = t(paused ? 'motion.resume' : 'motion.pause');
   motionButton.querySelector('.motion-icon').textContent = paused ? '▷' : 'Ⅱ';
   if (paused) video.pause();
-  else if (video.hasAttribute('src')) video.play().catch(() => {
-    document.body.classList.remove('video-ready'); videoStatus.hidden = false;
-    videoStatus.textContent = 'Video paused by your browser';
-  });
+  else if (video.hasAttribute('src')) video.play().catch(() => document.body.classList.remove('video-ready'));
 }
+languageListeners.push(applyMotion);
 motionButton.hidden = false;
-motionButton.addEventListener('click', () => { paused = !paused; applyMotion(); });
-reducedMotion.addEventListener('change', event => { paused = event.matches; applyMotion(); });
-video.addEventListener('playing', () => { document.body.classList.add('video-ready'); videoStatus.hidden = true; });
-video.addEventListener('error', () => {
-  document.body.classList.remove('video-ready'); videoStatus.hidden = false;
-  videoStatus.textContent = 'Video unavailable. Placeholder shown.';
-});
+motionButton.addEventListener('click', () => { paused = !paused; applyMotion(); renderSystems(); });
+video.addEventListener('playing', () => document.body.classList.add('video-ready'));
+video.addEventListener('error', () => document.body.classList.remove('video-ready'));
 const videoUrl = document.querySelector('meta[name="hero-video-url"]').content.trim();
 if (videoUrl) {
   try {
@@ -157,9 +80,76 @@ if (videoUrl) {
     if ((url.protocol === 'https:' || url.origin === location.origin) && !url.username && !url.password) {
       video.muted = true; video.src = url.href; video.autoplay = !paused;
     }
-  } catch { /* Invalid configuration keeps the placeholder. */ }
+  } catch { /* Invalid configuration keeps the gradient. */ }
 }
-applyMotion();
+
+// Before/after: on wide screens the section pins and the scattered tool chips fly
+// into the ring around Koi as the visitor scrolls. Elsewhere (narrow screens,
+// reduced motion) both panels are static and the ring assembles once in view.
+const systems = document.querySelector('.systems');
+const track = systems.querySelector('.systems-track');
+const chips = [...systems.querySelectorAll('.tool .tool-chip')];
+const slots = [...systems.querySelectorAll('.hub-node .tool-chip')];
+const applied = chips.map(() => ({ x: 0, y: 0 }));
+let offsets = [];
+let flying = false;
+let frame = 0;
+const ease = value => value < .5 ? 4 * value ** 3 : 1 - (-2 * value + 2) ** 3 / 2;
+
+function measureSystems() {
+  // Rect centres ignore rotation, so subtracting the translation already applied
+  // recovers each chip's resting centre without resetting its transform.
+  offsets = chips.map((chip, index) => {
+    const from = chip.getBoundingClientRect();
+    const to = slots[index].getBoundingClientRect();
+    return {
+      x: to.left + to.width / 2 - (from.left + from.width / 2 - applied[index].x),
+      y: to.top + to.height / 2 - (from.top + from.height / 2 - applied[index].y)
+    };
+  });
+}
+function systemsProgress() {
+  const rect = track.getBoundingClientRect();
+  return clamp(-rect.top / Math.max(1, rect.height - window.innerHeight));
+}
+function renderSystems() {
+  frame = 0;
+  if (!flying) return;
+  // Paused motion shows the finished ring; the section stays pinned so nothing jumps.
+  const progress = paused ? 1 : systemsProgress();
+  chips.forEach((chip, index) => {
+    const eased = ease(clamp((progress - .12 - index * .035) / .4));
+    // Alternate arcs keep chips from stacking on each other mid-flight; sin(π) = 0 so they still land exactly.
+    const arc = Math.sin(Math.PI * eased) * (index % 2 ? 44 : -44);
+    applied[index] = { x: offsets[index].x * eased, y: offsets[index].y * eased + arc };
+    chip.style.transform = `translate(${applied[index].x}px, ${applied[index].y}px) rotate(calc(var(--r) * ${1 - eased}))`;
+  });
+  systems.style.setProperty('--hub', clamp((progress - .05) / .25));
+  systems.style.setProperty('--draw', clamp((progress - .6) / .25));
+  systems.classList.toggle('is-connected', progress > .86);
+}
+function setSystemsMode() {
+  const wasFlying = flying;
+  flying = wide.matches && !reducedMotion.matches;
+  systems.classList.toggle('is-flying', flying);
+  if (flying) { measureSystems(); renderSystems(); return; }
+  chips.forEach((chip, index) => { chip.style.transform = ''; applied[index] = { x: 0, y: 0 }; });
+  systems.style.removeProperty('--hub');
+  systems.style.removeProperty('--draw');
+  if (wasFlying) systems.classList.add('is-connected');
+}
+window.addEventListener('scroll', () => { if (flying && !frame) frame = requestAnimationFrame(renderSystems); }, { passive: true });
+new ResizeObserver(() => { if (flying) { measureSystems(); renderSystems(); } }).observe(systems);
+languageListeners.push(() => { if (flying) { measureSystems(); renderSystems(); } });
+document.fonts?.ready.then(() => { if (flying) { measureSystems(); renderSystems(); } });
+wide.addEventListener('change', setSystemsMode);
+reducedMotion.addEventListener('change', event => { paused = event.matches; applyMotion(); setSystemsMode(); });
+
+// Reveals, and the static before/after ring assembling in view.
+const revealAll = () => {
+  document.querySelectorAll('.reveal').forEach(element => element.classList.add('is-visible'));
+  systems.classList.add('is-connected');
+};
 if ('IntersectionObserver' in window) {
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) if (entry.isIntersecting) {
@@ -167,9 +157,87 @@ if ('IntersectionObserver' in window) {
     }
   }, { threshold: 0.08 });
   document.querySelectorAll('.reveal').forEach(element => observer.observe(element));
+  const ringObserver = new IntersectionObserver(entries => {
+    if (!flying && entries.some(entry => entry.isIntersecting)) systems.classList.add('is-connected');
+  }, { threshold: 0.35 });
+  ringObserver.observe(systems.querySelector('.panel-after'));
 }
-else document.querySelectorAll('.reveal').forEach(element => element.classList.add('is-visible'));
+else revealAll();
+
+// Off-screen sections stop animating; the hero film pauses with them.
+const hero = document.querySelector('.hero');
+if ('IntersectionObserver' in window) {
+  const visibility = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      entry.target.toggleAttribute('data-offscreen', !entry.isIntersecting);
+      if (entry.target === hero && video.hasAttribute('src')) {
+        if (!entry.isIntersecting) video.pause();
+        else if (!paused) video.play().catch(() => document.body.classList.remove('video-ready'));
+      }
+    }
+  }, { rootMargin: '120px 0px' });
+  document.querySelectorAll('main > section, .connection-ribbon').forEach(section => visibility.observe(section));
+}
+
+// "What can we build" cards jump to the form with the interest chosen.
+const form = document.querySelector('#enquiry-form');
+const interest = form.querySelector('#f-interest');
+for (const card of document.querySelectorAll('[data-interest]')) {
+  card.addEventListener('click', () => {
+    interest.value = card.dataset.interest;
+    const field = interest.closest('.field');
+    field.classList.remove('is-flash');
+    void field.offsetWidth;
+    field.classList.add('is-flash');
+  });
+}
+
+// Enquiry form: Web3Forms from the browser. Without JavaScript the native POST
+// still reaches Web3Forms, which shows its own confirmation page.
+const status = form.querySelector('.form-status');
+const submit = form.querySelector('.form-submit');
+const success = document.querySelector('.form-success');
+form.addEventListener('submit', async event => {
+  event.preventDefault();
+  submit.disabled = true;
+  status.classList.remove('is-error');
+  status.textContent = t('form.sending');
+  try {
+    const data = Object.fromEntries(new FormData(form));
+    data.language = lang;
+    const response = await fetch(form.action, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || !result.success) throw new Error(result.message || `HTTP ${response.status}`);
+    form.reset();
+    status.textContent = '';
+    form.hidden = true;
+    success.hidden = false;
+    success.focus();
+  } catch {
+    // Keep everything the visitor typed; only the status changes.
+    status.textContent = t('form.error');
+    status.classList.add('is-error');
+  } finally {
+    submit.disabled = false;
+  }
+});
+success.querySelector('.form-again').addEventListener('click', () => {
+  success.hidden = true;
+  form.hidden = false;
+  form.querySelector('#f-name').focus();
+});
+
+let storedLanguage = null;
+try { storedLanguage = localStorage.getItem('koi-lang'); } catch { /* Blocked storage falls back to English. */ }
+const requestedLanguage = new URLSearchParams(location.search).get('lang') || storedLanguage;
+if (requestedLanguage === 'id') setLanguage('id', false);
 document.documentElement.classList.add('js');
+applyMotion();
+setSystemsMode();
 
 // Restored from the original Koi site: an interactive canvas pond, moved below
 // the process section so it does not compete with the video hero.
@@ -363,7 +431,7 @@ document.documentElement.classList.add('js');
     }
 
     function animatePond() {
-      if (!document.documentElement.classList.contains('motion-paused')) drawPond();
+      if (!document.documentElement.classList.contains('motion-paused') && !pond.hasAttribute('data-offscreen')) drawPond();
       requestAnimationFrame(animatePond);
     }
     drawPond();
