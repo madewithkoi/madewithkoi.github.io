@@ -184,19 +184,19 @@ test('the form does not send until required fields, including budget, are filled
 
 test('language switch translates the page, persists, and is shareable', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('h1')).toContainText('WE TURN BUSINESS');
+  await expect(page.locator('h1')).toContainText('We turn business problems');
   await page.getByRole('button', { name: 'ID', exact: true }).click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'id');
-  await expect(page.locator('h1')).toContainText('KAMI MENGUBAH');
+  await expect(page.locator('h1')).toContainText('Kami mengubah masalah bisnis');
   await expect(page).toHaveURL(/\?lang=id/);
   await expect(page.locator('.motion-control')).toContainText('Jeda animasi');
   await expect(page.getByRole('button', { name: 'ID', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#f-message')).toHaveAttribute('placeholder', /Ceritakan/);
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('h1')).toContainText('KAMI MENGUBAH');
+  await expect(page.locator('h1')).toContainText('Kami mengubah masalah bisnis');
   await page.getByRole('button', { name: 'EN', exact: true }).click();
   await expect(page).not.toHaveURL(/lang=/);
-  await expect(page.locator('h1')).toContainText('WE TURN BUSINESS');
+  await expect(page.locator('h1')).toContainText('We turn business problems');
   await expect(page.locator('#f-message')).toHaveAttribute('placeholder', /Tell us/);
 });
 
@@ -315,6 +315,6 @@ test('unavailable remote fonts never block site interactions', async ({ page }) 
   await page.route('https://cdn.jsdelivr.net/**', route => route.abort());
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await page.getByRole('button', { name: 'ID', exact: true }).click();
-  await expect(page.locator('h1')).toContainText('KAMI MENGUBAH');
+  await expect(page.locator('h1')).toContainText('Kami mengubah masalah bisnis');
   await expect(page.locator('.motion-control')).toBeVisible();
 });

@@ -60,12 +60,18 @@ body.video-ready #hero-video{opacity:1}
 .lang-switch button:hover{background:#ffffff1f}
 .lang-switch button[aria-pressed='true']{background:var(--cream);color:var(--ink)}
 .hero-content{margin:auto;text-align:center;padding:62px 4% 70px;width:100%}
-.hero-eyebrow{font-size:14px;margin-bottom:27px;color:#f4dbcf}
-.hero h1{font-weight:800;font-size:clamp(44px,7.3vw,112px);line-height:1.04;letter-spacing:-.073em}
-.hero-description{font-size:clamp(16px,1.4vw,20px);line-height:1.6;color:#f6e7df;margin:29px auto 0}
-.hero-cta{display:inline-flex;align-items:center;gap:22px;min-height:66px;margin-top:38px;padding:8px 9px 8px 28px;border:1px solid #fff2d84d;border-radius:50px;background:#ffffff1c;backdrop-filter:blur(12px);font-size:17px;font-weight:600;box-shadow:0 12px 35px #140d1626;transition:background .2s,transform .2s}
-.hero-cta:hover{background:#ffffff2f;transform:translateY(-3px)}
-.prompt-arrow{display:grid;place-items:center;background:var(--cream);color:var(--ink);width:48px;height:48px;border-radius:50%;flex-shrink:0;font-size:22px;transition:transform .3s var(--ease-out)}
+.hero-eyebrow{display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:34px;font-size:12px;font-weight:500;letter-spacing:.32em;text-transform:uppercase;color:#ead3c7}
+.hero-eyebrow:before,.hero-eyebrow:after{content:'';width:36px;height:1px;background:#ead3c780}
+.hero h1{max-width:1060px;margin:0 auto;font-weight:300;font-size:clamp(36px,4.4vw,66px);line-height:1.2;letter-spacing:-.035em}
+.hero h1 em{font-style:normal;color:#f3c2a4}
+.hero-description{max-width:520px;font-size:clamp(16px,1.2vw,18px);font-weight:350;line-height:1.8;color:#eadbd3;margin:30px auto 0}
+.hero-cta{display:inline-flex;align-items:center;gap:18px;min-height:54px;margin-top:42px;padding:6px 6px 6px 24px;border:1px solid #fff2d840;border-radius:50px;background:#ffffff12;backdrop-filter:blur(12px);font-size:15px;font-weight:500;letter-spacing:.01em;transition:background .4s,border-color .4s}
+.hero-cta:hover{background:#ffffff24;border-color:#fff2d880}
+/* The hero settles in slowly; paused motion shows it immediately. */
+.hero-content>:not(.hero-cta){animation:settle 1.8s var(--ease-out) both}
+.hero-content>:nth-child(2){animation-delay:.15s}.hero-content>:nth-child(3){animation-delay:.35s}
+.motion-paused .hero-content>*{animation:none!important}
+.prompt-arrow{display:grid;place-items:center;background:var(--cream);color:var(--ink);width:42px;height:42px;border-radius:50%;flex-shrink:0;font-size:18px;transition:transform .3s var(--ease-out)}
 .hero-cta:hover .prompt-arrow{transform:translateY(3px)}
 .hero-bottom{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 max(4%,90px) 25px 4%;font-size:12px;color:#e4cfc5}
 .scroll-cue{display:flex;gap:14px;align-items:center;min-height:44px}
@@ -455,6 +461,7 @@ body.video-ready #hero-video{opacity:1}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes ambient{to{transform:translate(5%,4%) scale(1.12);filter:hue-rotate(-15deg)}}
 @keyframes arch-flow{from{transform:translateX(0);opacity:0}20%,80%{opacity:1}to{transform:translateX(calc(var(--arch-gap,40px) - 6px));opacity:0}}
+@keyframes settle{from{opacity:0;transform:translateY(14px)}}
 @keyframes drift{to{transform:translate(4%,3%) scale(1.08)}}
 @keyframes marquee{to{transform:translateX(-50%)}}
 @keyframes float{50%{transform:translateY(-12px) rotate(-1deg)}}
@@ -540,7 +547,6 @@ body.video-ready #hero-video{opacity:1}
 }
 
 @media(max-width:900px){.section-space{padding-block:80px}
-.hero h1{font-size:7.3vw}
 .heading-row,.systems-intro{grid-template-columns:1fr;gap:20px}
 .systems-intro .eyebrow{margin-bottom:0}
 .heading-row>p,.systems-intro>p:last-child{max-width:600px}
@@ -573,12 +579,13 @@ body.video-ready #hero-video{opacity:1}
 .content-width{width:calc(100% - 40px)}
 .section-space{padding-block:64px}
 .hero-content{padding:40px 6% 30px}
-.hero h1{font-size:clamp(32px,9vw,48px);line-height:1.1;letter-spacing:-.055em}
-.hero-eyebrow{font-size:12px;margin-bottom:18px}
+.hero h1{font-size:clamp(30px,8.2vw,40px);line-height:1.22;letter-spacing:-.03em}
+.hero-eyebrow{font-size:11px;letter-spacing:.26em;gap:12px;margin-bottom:24px}
+.hero-eyebrow:before,.hero-eyebrow:after{width:20px}
 .hero-description{font-size:15px;max-width:380px;margin-top:20px}
 .hero-description br,.systems-intro h2 br{display:none}
-.hero-cta{min-height:58px;margin-top:28px;padding:7px 7px 7px 22px;font-size:15px}
-.prompt-arrow{width:44px;height:44px}
+.hero-cta{min-height:52px;margin-top:32px;padding:5px 5px 5px 20px;font-size:15px}
+.prompt-arrow{width:42px;height:42px}
 .hero-bottom{padding:0 6% 18px;font-size:12px}
 .hero-location{display:none}
 .hero-current{width:170%;left:-55%;filter:blur(30px)}

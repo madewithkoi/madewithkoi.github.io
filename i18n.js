@@ -28,7 +28,7 @@ export const id = {
   'nav.work': 'Karya',
   'nav.talk': 'Hubungi kami',
 
-  'hero.title': 'KAMI MENGUBAH<br>MASALAH BISNIS<br>MENJADI SOLUSI DIGITAL.',
+  'hero.title': 'Kami mengubah masalah bisnis <br>menjadi <em>solusi digital.</em>',
   'hero.description': 'Kami menemukan apa yang memperlambat bisnis, <br>lalu merancang dan membangun sistem untuk mengatasinya.',
   'hero.cta': 'Mulai percakapan',
   'hero.scroll': 'Lihat lebih dekat',
