@@ -162,7 +162,7 @@ for (const [label, reply] of [['HTTP error', { status: 500, json: { success: fal
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     await fillForm(page);
     await page.getByRole('button', { name: 'Start a conversation' }).click();
-    await expect(page.locator('.form-status')).toContainText('madewithkoicreative@gmail.com');
+    await expect(page.locator('.form-status')).toContainText('hello@madewithkoi.com');
     await expect(page.locator('.form-success')).toBeHidden();
     await expect(page.getByLabel('Name')).toHaveValue('Rina Putri');
     await expect(page.getByLabel('Budget range')).toHaveValue('Rp50–100 juta');

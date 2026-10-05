@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "python3 -m http.server 4187 --bind 127.0.0.1",
-    "test": "node --test tests/content.test.mjs",
+    "test": "node --test tests/content.test.mjs tests/contact.test.mjs",
     "test:browser": "playwright test",
     "eval": "node tests/eval.mjs"
   },
