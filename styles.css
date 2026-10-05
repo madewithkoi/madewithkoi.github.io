@@ -418,6 +418,7 @@ body.video-ready #hero-video{opacity:1}
 .footer-top>div{display:flex;flex-direction:column;font-size:13px}
 .footer-top>div a{display:flex;align-items:center;min-height:44px}
 .footer-top>div a:hover{text-decoration:underline}
+.footer-top address{font-style:normal;line-height:1.6;margin-top:10px;color:var(--muted)}
 .footer-bottom{display:flex;gap:30px;align-items:center;border-top:1px solid var(--line);margin-top:34px;padding-top:17px;color:var(--muted);font-size:12px}
 .footer-bottom a{margin-left:auto;min-height:44px;display:flex;align-items:center;padding-right:64px}
 .motion-control{position:fixed;z-index:15;right:20px;bottom:18px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;padding:0;border:1px solid #eee0d955;border-radius:30px;background:#2b2428;color:#fff5e9;font-size:12px;box-shadow:0 3px 20px #0002}

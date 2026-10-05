@@ -8,7 +8,7 @@ export const en = {
   'motion.pause': 'Pause motion',
   'motion.resume': 'Resume motion',
   'form.sending': 'Sending…',
-  'form.error': 'We couldn’t send that. Your message is still here. Try again, or email madewithkoicreative@gmail.com.'
+  'form.error': 'We couldn’t send that. Your message is still here. Try again, or email hello@madewithkoi.com.'
 };
 
 export const id = {
@@ -16,7 +16,7 @@ export const id = {
   'motion.pause': 'Jeda animasi',
   'motion.resume': 'Lanjutkan animasi',
   'form.sending': 'Mengirim…',
-  'form.error': 'Pesan belum terkirim. Isinya masih tersimpan di sini. Coba lagi, atau email ke madewithkoicreative@gmail.com.',
+  'form.error': 'Pesan belum terkirim. Isinya masih tersimpan di sini. Coba lagi, atau email ke hello@madewithkoi.com.',
 
   'nav.skip': 'Langsung ke konten',
   'nav.home': 'Beranda Koi',
